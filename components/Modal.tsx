@@ -1,9 +1,10 @@
-import React from 'react'
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleModal } from './modalSlice';
+import { RootState } from '../app/store';
 import {motion,AnimatePresence} from 'framer-motion';
 
 interface Props{
-    isModalOpen:boolean,
-    setIsModalOpen:React.Dispatch<React.SetStateAction<boolean>>
     children:React.ReactNode
 }
 
@@ -22,34 +23,24 @@ const modal={
   }
 }
 
-const Modal:React.FC<Props>=({isModalOpen,setIsModalOpen,children})=>{
+const Modal:React.FC<Props>=({children})=>{
 
-  /*const emailInputRef=useRef<any>(null);
-  const passInputRef=useRef<any>(null);
+  const IsModalOpen=useSelector((state:RootState)=>state.isModalOpen);
+  const dispatch=useDispatch();
 
-  const onSubmitHandler=(e:React.FormEvent<HTMLFormElement>|React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
-      e.preventDefault();
-      console.log('here',emailInputRef.current.value)
-  
-      if(emailInputRef.current.value===''|| passInputRef.current.value==='' || !((emailInputRef.current.value.includes('@') && emailInputRef.current.value.includes('.'))) || (passInputRef?.current?.value.length<6)){
-        console.log(emailInputRef.current.value==='',passInputRef.current.value==='', (emailInputRef.current.value.includes('@')),  emailInputRef.current.value.includes('.') , (passInputRef?.current?.value.length<6))
-        return;
-      }
-    
-      console.log('reached here')
-      setEmailCredentials({email:emailInputRef.current.value,password:passInputRef.current.value})
-      setIsModalOpen(false)
-  }*/
+  const onClickHandler=()=>{
+    dispatch(toggleModal(false))
+  }
 
   return (
     <AnimatePresence exitBeforeEnter>
-        {isModalOpen && (
+        {IsModalOpen && (
             <motion.div
             className='fixed top-0 left-0 w-full h-full bg-black/50 z-10 flex place-items-center' 
             variants={backdrop}
             initial="hidden"
             animate="visible"
-            onClick={()=>setIsModalOpen(false)}
+            onClick={onClickHandler}
             >
                 <motion.div
                 variants={modal}

@@ -18,4 +18,13 @@ export default NextAuth({
     db:db,
     ...firestorefunctions
   }),
+  callbacks: {
+    async session({ session, token, user }) {
+      console.log(user.id)
+      // Send properties to the client, like an access_token from a provider.
+      session.userId = user.id;
+      console.log(session.userId) 
+      return session
+    }
+  }
 })

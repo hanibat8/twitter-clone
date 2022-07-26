@@ -1,4 +1,7 @@
 import React from 'react'
+import { toggleModal } from './modalSlice';
+import { RootState } from '../app/store';
+import { useDispatch } from 'react-redux';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -13,19 +16,18 @@ type FormData = {
     password: string;
 };
   
-interface Props{
-    setIsModalOpen:React.Dispatch<React.SetStateAction<boolean>>
-}
-
-const SignInForm:React.FC<Props>=({setIsModalOpen})=>{
+const SignInForm=()=>{
 
     const {register ,handleSubmit, formState: { errors }}=useForm<FormData>({
         resolver:yupResolver(schema)
     });
+
+    const dispatch=useDispatch();
   
     const onSubmitHandler=(handleSubmit(data=>{
         console.log(data);
-        setIsModalOpen(false)
+        dispatch(toggleModal(false));
+        //setIsModalOpen(false)
     }))
     
     return (
