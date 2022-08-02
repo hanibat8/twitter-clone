@@ -1,5 +1,5 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
-import { addDoc, collection, onSnapshot, deleteDoc, doc ,query, where } from 'firebase/firestore'
+import { addDoc, collection, onSnapshot, deleteDoc, doc ,query, where, updateDoc, getDoc } from 'firebase/firestore'
 import {db} from '../firebase.config';
 
 interface Posts{
@@ -22,7 +22,7 @@ export const apiSlice = createApi({
   tagTypes: ['Posts','Users'],
   endpoints: builder => ({
     getPosts: builder.query<Posts[],void>({
-      async queryFn(followingsArr):Promise<any>{
+      async queryFn(currUserId:any):Promise<any>{
         try{
           //const tweetsRef=collection(db,'tweets');
          /* let tweetsArr: { }[]=[];
@@ -39,6 +39,13 @@ export const apiSlice = createApi({
               })
             })
           })*/
+
+          let currUserDocRef = doc(db,`users/${currUserId}`);
+          let docData=(await getDoc(currUserDocRef)).data();
+          //console.log(docData);
+          let followingsArr=docData?.following??[];
+          followingsArr.push(currUserId);
+          //console.log(followingsArr);
           let tweetsArr: { }[]=[];
           const q=query(collection(db,'tweets'), where("creatorId", "in" , followingsArr))
           return new Promise((resolve, reject) => {
@@ -50,14 +57,16 @@ export const apiSlice = createApi({
                })
                //console.log(tweetsArr);
                resolve({data:tweetsArr});
-            })})  
+            })})
         
         //console.log(tweetsArr);
         //return {data:tweetsArr} 
         }
+
         catch(err:any){
           return{error:err} 
         }
+
     },providesTags: ['Posts']}),
     
     addPost:builder.mutation({
@@ -69,9 +78,11 @@ export const apiSlice = createApi({
             })
             return {data:'ok'} 
           }
+
           catch(err){
             return {error:err}
           }
+
         },invalidatesTags:['Posts']
     }),
     
@@ -82,9 +93,11 @@ export const apiSlice = createApi({
           await deleteDoc(doc(db,`tweets/${id}`))
           return {data:'ok'} 
         }
+
         catch(err){
           return {error:err}
         }
+
       },invalidatesTags:['Posts']
   }),
 
@@ -94,38 +107,68 @@ export const apiSlice = createApi({
         let usersArr: { }[]=[];
         return new Promise((resolve, reject) => {
           onSnapshot(collection(db,'users'),(querySnapshot)=>{
-            console.log(querySnapshot.docs)
+            //console.log(querySnapshot.docs)
             usersArr=querySnapshot.docs.map((doc)=>{
-             console.log(doc.data());
+             //console.log(doc.data());
                 return {id:doc.id,
                   ...doc.data()}
              })
-             console.log(usersArr);
+             //console.log(usersArr);
              resolve({data:usersArr});
           })})  
       
       //console.log(tweetsArr);
       //return {data:tweetsArr} 
       }
+
       catch(err:any){
         return{error:err} 
       }
-  },providesTags: ['Users'],}),
+
+  },providesTags: ['Users']}),
 
   followUser:builder.mutation({
-    async queryFn(id):Promise<any>{
+    async queryFn({id,currUserId}):Promise<any>{
       try{
-        //console.log(id);
-        await deleteDoc(doc(db,`tweets/${id}`))
+        //console.log(id,currUserId);
+        let currUserDocRef = doc(db,`users/${currUserId}`);
+        let docData=(await getDoc(currUserDocRef)).data();
+        let followersArr=docData?.followers??[];
+        if(followersArr.includes(id)) return {data:'ok'}
+        followersArr.push(id);
+        await updateDoc(currUserDocRef,'following',followersArr);
+
+        return {data:'ok'} 
+      }
+
+      catch(err){
+        return {error:err}
+      }
+
+    },invalidatesTags:['Users','Posts']
+  }),
+
+  likeTweet:builder.mutation({
+    async queryFn({id,currUserId}):Promise<any>{
+      try{
+  
+        let currUserDocRef = doc(db,`users/${currUserId}`);
+        let docData=(await getDoc(currUserDocRef)).data();
+        let likedTweetsArr=docData?.likes??[];
+        if(likedTweetsArr.includes(id)) return {data:'ok'}
+        //console.log('ooooook,',likedTweetsArr,id);
+        likedTweetsArr.push(id);
+        await updateDoc(currUserDocRef,'likes',likedTweetsArr);
+        
         return {data:'ok'} 
       }
       catch(err){
         return {error:err}
       }
-    },invalidatesTags:['Posts']
+    }
   })
   })
 })
 
 // Export the auto-generated hook for the `getPosts` query endpoint
-export const { useGetPostsQuery, useAddPostMutation, useDeletePostMutation, useGetUsersQuery } = apiSlice
+export const { useGetPostsQuery, useAddPostMutation, useDeletePostMutation, useGetUsersQuery, useFollowUserMutation, useLikeTweetMutation } = apiSlice

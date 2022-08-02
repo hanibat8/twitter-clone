@@ -12,11 +12,13 @@ import UsersList from '../components/UsersList';
 import { doc, getDoc } from 'firebase/firestore'
 import {db} from '../firebase.config';
 
-const getCurrentUserFollowingArray=async (userId:string|any)=>{
+/*const getCurrentUserFollowingArray=async (userId:string|any)=>{
   let docRef = doc(db,`users/${userId}`);
   let res=await getDoc(docRef)
-  return res.get('following');
-}
+  console.log(res)
+  console.log(res.get('following'));
+  return res.get('following')
+}*/
 
 const Home: NextPage = () => {
   //const [isModalOpen,setIsModalOpen]=useState<boolean>(false);
@@ -25,8 +27,8 @@ const Home: NextPage = () => {
   //console.count('Rerender');
   //console.log(session,status)
 
-  let followingArr:string[]|any=[];
-  getCurrentUserFollowingArray(session?.userId).then(data=>followingArr=data);
+  //let following:string[];
+  //getCurrentUserFollowingArray(session?.userId).then(data=>following=data);
 
   return (
   <>
@@ -55,7 +57,7 @@ const Home: NextPage = () => {
         <div className='flex mx-32 gap-x-5'>
           <Sidebar/>
           <main className='mr-5 pt-8 flex-1 basis-[45%] border-x-2 border-stone-100 min-h-screen'>
-            <PostsList followingArr={[session?.userId,...followingArr]}/>
+            <PostsList currUserId={session?.userId}/>
           </main>
           <div className='basis-[25%]'>
           <Search/>

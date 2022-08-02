@@ -10,7 +10,7 @@ interface PropsType{
 const UsersList:React.FC<PropsType>=({currentUserId})=> {
 
   const {data:users,isLoading,error,isError}=useGetUsersQuery();
-  console.log(users);
+  //console.log(users);
 
   let content;
 
@@ -28,12 +28,12 @@ const UsersList:React.FC<PropsType>=({currentUserId})=> {
 
   else if(users){
     if(users.length<=0){
-      console.log('aye')
+      //console.log('aye')
       content=<p color='black'>No users</p>;
       return null;
     }
 
-    console.log(users);
+    //console.log(users);
     content=users.filter((user:any)=>user.id!==currentUserId).map((user:any) => (
         <Users key={user.id} {...user}/>
       ))
