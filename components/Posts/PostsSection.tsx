@@ -9,7 +9,7 @@ import UsersList from '../UsersList';
 
 const PostsSection=()=>{
 
-    const {data:session,status}=useSession();
+    const {data:session,}=useSession();
     return (
         <>
             <Modal>

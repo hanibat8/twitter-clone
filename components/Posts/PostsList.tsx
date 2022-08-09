@@ -2,18 +2,11 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import {useGetPostsQuery} from '../../services/apiSlice';
 import LoadingSpinner from '../LoadingSpinner';
-import Post from './Post';
+import PostRetweetedPostsList from './PostRetweetPostsList';
 
 interface PropsType{
   currUserId:string|any
 }
-
-const mapPosts=(posts:any,currUserId:string)=>{
-  //console.count('here')
-  return posts?.map((post:any) => (
-    <Post key={post.id} currUserId={currUserId} {...post}/>
-  ))
-};
 
 const PostsList:React.FC<PropsType>= ({currUserId}) => {
 
@@ -23,9 +16,6 @@ const PostsList:React.FC<PropsType>= ({currUserId}) => {
   //console.log(posts,isLoading);
  
   let content;
-
-  //do check this later
-  content=React.useMemo(()=>mapPosts(posts,currUserId), [posts]);
 
   if(isLoading){
     content=<LoadingSpinner/>
@@ -37,14 +27,8 @@ const PostsList:React.FC<PropsType>= ({currUserId}) => {
   }
 
   else if(posts){
-    if(posts.length<=0){
-      console.log('aye')
-      content=<p color='black'>No tweets yet</p>;
-      return null;
-    }
-
-    //console.count('aha');
-    //content=mapPosts(posts);
+    console.log(posts);
+    content=<PostRetweetedPostsList posts={posts} currUserId={currUserId}/>
   }
 
   return (
