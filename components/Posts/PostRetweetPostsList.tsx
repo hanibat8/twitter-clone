@@ -1,5 +1,7 @@
 import React from 'react'
-import Post from './Post';
+import dynamic from "next/dynamic";
+
+const Post = dynamic(() => import("./Post"))
 
 interface PropsType{
   currUserId:string|any,

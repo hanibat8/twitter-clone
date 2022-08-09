@@ -1,7 +1,7 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import postsReducer from '../components/Posts/postsSlice'
 import modalReducer from '../components/modalSlice'
-import { apiSlice } from '../services/apiSlice'
+import { apiSlice } from '../components/apiSlice'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
 
 export const store = configureStore({

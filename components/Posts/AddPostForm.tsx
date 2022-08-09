@@ -1,15 +1,15 @@
 import React from 'react'
 import Image from 'next/image';
 import { toggleModal } from '../modalSlice';
-import {useAddPostMutation} from '../../services/apiSlice';
+import { useAddPostMutation } from '../apiSlice';
 import { useDispatch } from 'react-redux'
-import { useSession} from 'next-auth/react';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
+import { useSession } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import { postAdded } from './postsSlice'
-import { nanoid } from '@reduxjs/toolkit';
+//import { postAdded } from './postsSlice'
+//import { nanoid } from '@reduxjs/toolkit';
 
 const schema=yup.object().shape({
   tweet:yup.string().min(1).max(100).required()

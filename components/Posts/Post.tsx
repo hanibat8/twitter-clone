@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { FaRetweet,FaRegHeart } from "react-icons/fa";
 import { FiMessageCircle } from "react-icons/fi";
 import {AiOutlineDelete} from 'react-icons/ai';
-import { useDeletePostMutation,useLikeTweetMutation,useRetweetTweetMutation } from '../../services/apiSlice';
+import { useDeletePostMutation,useLikeTweetMutation,useRetweetTweetMutation } from '../apiSlice';
 
 interface PropsType{
     id: string;

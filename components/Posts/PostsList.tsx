@@ -1,8 +1,10 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import {useGetPostsQuery} from '../../services/apiSlice';
-import LoadingSpinner from '../LoadingSpinner';
-import PostRetweetedPostsList from './PostRetweetPostsList';
+//import { useSelector } from 'react-redux'
+import {useGetPostsQuery} from '../apiSlice';
+import dynamic from "next/dynamic";
+
+const LoadingSpinner = dynamic(() => import("../LoadingSpinner"))
+const PostRetweetedPostsList = dynamic(() => import("./PostRetweetPostsList"))
 
 interface PropsType{
   currUserId:string|any

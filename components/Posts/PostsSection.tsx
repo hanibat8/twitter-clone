@@ -4,8 +4,10 @@ import Sidebar from '../Sidebar';
 import Search from '../Search';
 import PostsList from '../Posts/PostsList';
 import AddPostForm from '../Posts/AddPostForm';
-import Modal from '../Modal';
+import dynamic from "next/dynamic";
 import UsersList from '../UsersList';
+
+const Modal = dynamic(() => import("../Modal"))
 
 const PostsSection=()=>{
 

@@ -41,7 +41,7 @@ const Sidebar=()=>{
               </Link>
           </div>
           <button onClick={onClickHandler} className=' cursor-pointer bg-blue-500 rounded-3xl text-white py-2 px-[90px] hover:bg-blue-400 self-start'>Tweet</button>
-          <button onClick={(e)=>{e.preventDefault(); signOut()}} className=' cursor-pointer bg-blue-500 rounded-3xl text-white py-2 px-[90px] hover:bg-blue-400 self-start'>Sign out</button>'
+          <button onClick={(e)=>{e.preventDefault(); signOut()}} className=' cursor-pointer bg-blue-500 rounded-3xl text-white py-2 px-[90px] hover:bg-blue-400 self-start'>Sign out</button>
         </div>
         <div className='flex hover:bg-slate-200 mt-auto pr-32 rounded-full cursor-pointer '>
             {session?.user?.image && <Image className='rounded-full' src={session?.user?.image!} width={50} height={50}/>}

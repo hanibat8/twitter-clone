@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFollowUserMutation } from '../services/apiSlice';
+import { useFollowUserMutation } from './apiSlice';
 import { useSession} from 'next-auth/react';
 import Image from 'next/image';
 

@@ -1,6 +1,6 @@
 import React from 'react'
+import { useGetUsersQuery } from './apiSlice'
 import LoadingSpinner from './LoadingSpinner';
-import { useGetUsersQuery } from '../services/apiSlice'
 import Users from './Users';
 
 interface PropsType{
