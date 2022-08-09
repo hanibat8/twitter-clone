@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { FaRetweet,FaRegHeart } from "react-icons/fa";
 import { FiMessageCircle } from "react-icons/fi";
 import {AiOutlineDelete} from 'react-icons/ai';
-import { useDeletePostMutation,useLikeTweetMutation } from '../../services/apiSlice';
+import { useDeletePostMutation,useLikeTweetMutation,useRetweetTweetMutation } from '../../services/apiSlice';
 
 interface PropsType{
     id: string;
@@ -19,12 +19,18 @@ const Post:React.FC<PropsType>=({id,timestamp,tweet,name,image,creatorId,currUse
   
   const [deletePost]=useDeletePostMutation();
   const [likeTweet]=useLikeTweetMutation();
+  const [retweetTweet]=useRetweetTweetMutation();
 
   console.log(id,currUserId)
 
   const onClickLikeBtnHandler=(id:string)=>{
     console.log('here');
     likeTweet({id,currUserId})
+  }
+
+  const onClickRetweetBtnHandler=(id:string)=>{
+    console.log('here');
+    retweetTweet({id,currUserId})
   }
 
   return (
@@ -39,7 +45,7 @@ const Post:React.FC<PropsType>=({id,timestamp,tweet,name,image,creatorId,currUse
         <div className='flex justify-around'>
           <FiMessageCircle size={20} className='mr-2 cursor-pointer hover:text-slate-400'/>
           <FaRegHeart onClick={onClickLikeBtnHandler.bind(null,id)} size={18} className='mr-2 cursor-pointer hover:text-slate-400'/>
-          {creatorId!==currUserId ? <FaRetweet size={20} className='mr-2 cursor-pointer hover:text-slate-400'/>:''}
+          {creatorId!==currUserId ? <FaRetweet onClick={onClickRetweetBtnHandler.bind(null,id)} size={20} className='mr-2 cursor-pointer hover:text-slate-400'/>:''}
           {creatorId===currUserId ? <AiOutlineDelete size={20} className='mr-2 cursor-pointer hover:text-slate-400' onClick={()=>{console.log(id); deletePost(id)}}/>:''}
         </div>
       </div>

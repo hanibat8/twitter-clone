@@ -9,7 +9,7 @@ interface PropsType{
 
 const UsersList:React.FC<PropsType>=({currentUserId})=> {
 
-  const {data:users,isLoading,error,isError}=useGetUsersQuery();
+  const {data:users,isLoading,error,isError}=useGetUsersQuery(currentUserId);
   //console.log(users);
 
   let content;
@@ -22,21 +22,23 @@ const UsersList:React.FC<PropsType>=({currentUserId})=> {
   }
 
   else if(isError){
-      let a:any=error
-      content=<p color='red'>{a?.message}</p>
+    let a:any=error
+    content=<p color='red'>{a?.message}</p>
   }
 
   else if(users){
-    if(users.length<=0){
-      //console.log('aye')
-      content=<p color='black'>No users</p>;
-      return null;
-    }
+    console.log(users.length,users);
 
-    //console.log(users);
-    content=users.filter((user:any)=>user.id!==currentUserId).map((user:any) => (
+    if(users.length===0){
+      console.log('aye')
+      content=<p className='text-center font-medium' color='black'>No users found to follow</p>;
+    }
+    else{
+      console.log(users);
+      content=users?.filter((user:any)=>user.id!==currentUserId).map((user:any) => (
         <Users key={user.id} {...user}/>
       ))
+    }
   }
 
   return (
