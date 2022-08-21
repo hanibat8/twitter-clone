@@ -17,12 +17,16 @@ const Sidebar=()=>{
   }
   
   return (
-    <div className='h-screen flex flex-col items-start pt-8 basis-[25%] '>
+    <div className='h-screen flex flex-col items-start pt-8 basis-[22%] '>
         <FiTwitter color='rgb(59 130 246)' size={50} className='fill-blue-500 mb-5  hover:bg-slate-200 cursor-pointer	'/>
         <div>
           <div className='flex hover:bg-slate-200 mb-8 py-4 px-2 rounded-full cursor-pointer'>
-              <FiHome color='rgba(0,0,0,.7)' size={35} className=' inline-block  mr-2'/>
-              <span className=' text-lg'>Home</span>
+              <Link href="/">
+                <a className='flex'>
+                  <FiHome color='rgba(0,0,0,.7)' size={35} className=' inline-block  mr-2'/>
+                  <span className=' text-lg'>Home</span>
+                </a>
+              </Link>
           </div>
           <div className='flex hover:bg-slate-200 mb-8 py-4 px-2 rounded-full cursor-pointer '>
               <FiBell color='rgba(0,0,0,.7)' size={35} className=' inline-block mr-2'/>

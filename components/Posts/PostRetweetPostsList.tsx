@@ -1,18 +1,13 @@
 import React from 'react'
+import {useGetRetweetedPostsQuery} from '../apiSlice';
+
 import dynamic from "next/dynamic";
+import withDataListHOC from '../withDataListHOC';
 
 const Post = dynamic(() => import("./Post"))
 
 interface PropsType{
-  currUserId:string|any,
-  posts:Posts[]
-}
-
-interface Posts{
-  id:string,
-  timestamp:string,
-  tweet:string,
-  creatorId:string
+  content:any
 }
 
 const mapPosts=(posts:any,currUserId:string)=>{
@@ -22,28 +17,13 @@ const mapPosts=(posts:any,currUserId:string)=>{
   ))
 };
 
-const PostRetweetedPostsList:React.FC<PropsType>= ({posts,currUserId}) => {
-
-    let content;
-
-    //do check this later
-    //content=React.useMemo(()=>mapPosts(posts,currUserId), [posts]);
-
-    console.log(posts);
-
-    if(posts.length<=0){
-      console.log('aye')
-      content=<p color='black'>No tweets yet</p>;
-      return null;
-    }
-
-    content=mapPosts(posts,currUserId);
-
+const PostRetweetedPostsList:React.FC<PropsType>= ({content}) => {
+ 
     return (
         <section className="posts-list">
-        {content}
+          {content}
         </section>
   )
 }
 
-export default PostRetweetedPostsList;
+export default withDataListHOC(PostRetweetedPostsList,useGetRetweetedPostsQuery,mapPosts);

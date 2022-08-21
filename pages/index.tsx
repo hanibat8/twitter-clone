@@ -2,25 +2,12 @@ import type { NextPage } from 'next'
 import { useSession} from 'next-auth/react';
 import SignUpLoginFullScreen from '../components/SignUpLoginFullScreen';
 import LoadingScreen from '../components/LoadingScreen';
-import PostsSection from '../components/Posts/PostsSection';
-
-/*const getCurrentUserFollowingArray=async (userId:string|any)=>{
-  let docRef = doc(db,`users/${userId}`);
-  let res=await getDoc(docRef)
-  console.log(res)
-  console.log(res.get('following'));
-  return res.get('following')
-}*/
+import MainSection from '../components/MainSection';
+import PostsList from '../components/Posts/PostsList';
 
 const Home: NextPage = () => {
-  //const [isModalOpen,setIsModalOpen]=useState<boolean>(false);
   
   const {data:session,status}=useSession();
-  //console.count('Rerender');
-  //console.log(session,status)
-
-  //let following:string[];
-  //getCurrentUserFollowingArray(session?.userId).then(data=>following=data);
 
   return (
   <>
@@ -34,7 +21,11 @@ const Home: NextPage = () => {
     }
     
     {session && status==='authenticated' &&
-        <PostsSection/>
+        <MainSection>
+          <main className='mr-5 pt-8 flex-1 basis-[45%] border-x-2 border-stone-100 min-h-screen'>
+            <PostsList currUserId={session?.userId} errMsg='No posts found'/>
+          </main>
+        </MainSection>
      }
 
   </>

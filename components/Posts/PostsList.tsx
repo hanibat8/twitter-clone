@@ -1,43 +1,29 @@
 import React from 'react'
 //import { useSelector } from 'react-redux'
 import {useGetPostsQuery} from '../apiSlice';
-import dynamic from "next/dynamic";
 
-const LoadingSpinner = dynamic(() => import("../LoadingSpinner"))
-const PostRetweetedPostsList = dynamic(() => import("./PostRetweetPostsList"))
+import dynamic from "next/dynamic";
+import withDataListHOC from '../withDataListHOC';
+const Post = dynamic(() => import("./Post"))
 
 interface PropsType{
-  currUserId:string|any
+  content?:any
 }
 
-const PostsList:React.FC<PropsType>= ({currUserId}) => {
+const mapPosts=(posts:any,currUserId:string)=>{
 
-  //const posts = useSelector((state:State) => state.posts)
-  const {data:posts,isLoading,error,isError} = useGetPostsQuery(currUserId);
-  //console.count('Rerender PostList');
-  //console.log(posts,isLoading);
- 
-  let content;
+  return posts?.map((post:any) => (
+    <Post key={post.id} currUserId={currUserId} {...post}/>
+  ))
+};
 
-  if(isLoading){
-    content=<LoadingSpinner/>
-  }
-
-  else if(isError){
-      let a:any=error
-      content=<p color='red'>{a?.message}</p>
-  }
-
-  else if(posts){
-    console.log(posts);
-    content=<PostRetweetedPostsList posts={posts} currUserId={currUserId}/>
-  }
+const PostsList:React.FC<PropsType>= ({content}) => {
 
   return (
     <section className="posts-list">
-    {content}
+      {content}
     </section>
   )
 }
 
-export default PostsList;
+export default withDataListHOC(PostsList,useGetPostsQuery,mapPosts);

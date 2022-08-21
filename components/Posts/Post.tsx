@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image';
 import { FaRetweet,FaRegHeart } from "react-icons/fa";
 import { FiMessageCircle } from "react-icons/fi";
-import {AiOutlineDelete} from 'react-icons/ai';
+import { AiOutlineDelete } from 'react-icons/ai';
 import { useDeletePostMutation,useLikeTweetMutation,useRetweetTweetMutation } from '../apiSlice';
 
 interface PropsType{
@@ -21,7 +21,7 @@ const Post:React.FC<PropsType>=({id,timestamp,tweet,name,image,creatorId,currUse
   const [likeTweet]=useLikeTweetMutation();
   const [retweetTweet]=useRetweetTweetMutation();
 
-  console.log(id,currUserId)
+  //console.log(id,currUserId)
 
   const onClickLikeBtnHandler=(id:string)=>{
     console.log('here');
