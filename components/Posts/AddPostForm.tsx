@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image';
 import { toggleModal } from '../modalSlice';
-import { useAddPostMutation } from '../apiSlice';
+import { useAddPostMutation } from '../Posts/postsSlice';
 import { useDispatch } from 'react-redux'
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
@@ -41,11 +41,12 @@ const AddPostForm=()=>{
         content:data.tweet
       })
     )*/
+    dispatch(toggleModal(false))
     addPost({'creatorId':session?.userId,
             'name':session?.user?.name,
             'email':session?.user?.email,
             'image':session?.user?.image,
-            ...data}).finally(()=> dispatch(toggleModal(false)));
+            ...data});
   }))
 
   return (

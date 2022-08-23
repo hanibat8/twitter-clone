@@ -1,12 +1,10 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
-import postsReducer from '../components/Posts/postsSlice'
 import modalReducer from '../components/modalSlice'
 import { apiSlice } from '../components/apiSlice'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
 
 export const store = configureStore({
   reducer: {
-    posts: postsReducer,
     isModalOpen:modalReducer,
     [apiSlice.reducerPath]:apiSlice.reducer
   },

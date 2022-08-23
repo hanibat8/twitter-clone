@@ -1,7 +1,8 @@
 import React from 'react'
 import Modal from '../components/Modal';
 import SignUpLoginScreen from '../components/SignUpLoginScreen';
-import SignInForm from '../components/SignInForm';
+import dynamic from "next/dynamic";
+const SignInForm = dynamic(() => import("./SignInForm"))
 
 const SignUpLoginFullScreen=()=>{
   return (

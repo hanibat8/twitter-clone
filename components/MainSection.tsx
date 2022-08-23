@@ -3,7 +3,7 @@ import { useSession} from 'next-auth/react';
 import Sidebar from './Sidebar';
 import Search from './Search';
 import AddPostForm from './Posts/AddPostForm';
-import UsersList from './UsersList';
+import UsersList from './Users/UsersList';
 import dynamic from "next/dynamic";
 const Modal = dynamic(() => import("./Modal"))
 

@@ -1,6 +1,6 @@
 import React from 'react'
 //import { useSelector } from 'react-redux'
-import {useGetPostsQuery} from '../apiSlice';
+import {useGetPostsQuery} from './postsSlice';
 
 import dynamic from "next/dynamic";
 import withDataListHOC from '../withDataListHOC';

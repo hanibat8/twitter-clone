@@ -1,7 +1,7 @@
 import React from 'react'
-import { useGetUsersQuery } from './apiSlice'
+import { useGetUsersQuery } from './usersSlice'
 
-import withDataListHOC from './withDataListHOC'
+import withDataListHOC from '../withDataListHOC'
 import Users from './Users';
 
 interface PropsType{

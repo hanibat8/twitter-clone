@@ -1,9 +1,12 @@
 import React from 'react'
 import Image from 'next/image';
-import { FaRetweet,FaRegHeart } from "react-icons/fa";
+import { FaRetweet } from "react-icons/fa";
 import { FiMessageCircle } from "react-icons/fi";
 import { AiOutlineDelete } from 'react-icons/ai';
-import { useDeletePostMutation,useLikeTweetMutation,useRetweetTweetMutation } from '../apiSlice';
+import { BsFillHeartFill,BsHeart } from 'react-icons/bs'
+import { useDeletePostMutation,
+          useLikeTweetMutation,
+          useRetweetTweetMutation } from './postsSlice';
 
 interface PropsType{
     id: string;
@@ -13,9 +16,15 @@ interface PropsType{
     image:string;
     creatorId:string;
     currUserId:string;
+    likedBy:string[];
+    retweetedBy:string[]
 }
 
-const Post:React.FC<PropsType>=({id,timestamp,tweet,name,image,creatorId,currUserId}) =>{
+const isLikedByUser=(likedBy:string[],creatorId:string)=>likedBy?.includes(creatorId);
+
+const isRetweetedByUser=(retweetedBy:string[],creatorId:string)=>retweetedBy?.includes(creatorId);
+
+const Post:React.FC<PropsType>=({id,timestamp,tweet,name,image,creatorId,currUserId,likedBy,retweetedBy}) =>{
   
   const [deletePost]=useDeletePostMutation();
   const [likeTweet]=useLikeTweetMutation();
@@ -44,8 +53,10 @@ const Post:React.FC<PropsType>=({id,timestamp,tweet,name,image,creatorId,currUse
         <p>{tweet}</p>
         <div className='flex justify-around'>
           <FiMessageCircle size={20} className='mr-2 cursor-pointer hover:text-slate-400'/>
-          <FaRegHeart onClick={onClickLikeBtnHandler.bind(null,id)} size={18} className='mr-2 cursor-pointer hover:text-slate-400'/>
-          {creatorId!==currUserId ? <FaRetweet onClick={onClickRetweetBtnHandler.bind(null,id)} size={20} className='mr-2 cursor-pointer hover:text-slate-400'/>:''}
+          {isLikedByUser(likedBy,currUserId) ? <BsFillHeartFill fill='red' onClick={onClickLikeBtnHandler.bind(null,id)} size={18} className='mr-2 cursor-pointer hover:text-slate-400'/>
+                                             : <BsHeart onClick={onClickLikeBtnHandler.bind(null,id)} size={18} className='mr-2 cursor-pointer hover:text-slate-400 border-gray-500'/>}
+          {creatorId!==currUserId ? isRetweetedByUser(retweetedBy,currUserId) ? <FaRetweet fill='#5CC777' onClick={onClickRetweetBtnHandler.bind(null,id)} size={20} className='mr-2 cursor-pointer hover:text-slate-400'/>:
+                                                                                <FaRetweet onClick={onClickRetweetBtnHandler.bind(null,id)} size={20} className='mr-2 cursor-pointer hover:text-slate-400'/> :''}
           {creatorId===currUserId ? <AiOutlineDelete size={20} className='mr-2 cursor-pointer hover:text-slate-400' onClick={()=>{console.log(id); deletePost(id)}}/>:''}
         </div>
       </div>

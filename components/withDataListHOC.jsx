@@ -1,9 +1,10 @@
 import React from 'react'
-import LoadingSpinner from './LoadingSpinner';
+import dynamic from "next/dynamic";
+const LoadingSpinner = dynamic(() => import("./LoadingSpinner"))
 
 const withDataListHOC=(WrappedComponent,queryFn,mapFn)=>{
     
-    return function ({currUserId,errMsg}){      
+    return function withDataListHOC ({currUserId,errMsg}){      
 
         const {data,isLoading,error,isError} = queryFn(currUserId);
 
@@ -34,5 +35,6 @@ const withDataListHOC=(WrappedComponent,queryFn,mapFn)=>{
         )
     }
 }
+
 
 export default withDataListHOC

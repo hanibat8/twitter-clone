@@ -1,5 +1,5 @@
 import React from 'react'
-import {useGetRetweetedPostsQuery} from '../apiSlice';
+import {useGetRetweetedPostsQuery} from './postsSlice';
 
 import dynamic from "next/dynamic";
 import withDataListHOC from '../withDataListHOC';

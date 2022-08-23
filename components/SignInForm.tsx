@@ -1,6 +1,5 @@
 import React from 'react'
 import { toggleModal } from './modalSlice';
-import { RootState } from '../app/store';
 import { useDispatch } from 'react-redux';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
