@@ -5,13 +5,31 @@ import { db } from '../../firebase.config';
 
 interface Users{
     image:string,
-    name:string
-  }
+    name:string,
+    id:string
+}
 
 const extendedApi = apiSlice.injectEndpoints({
 endpoints: (build) => ({
 
     getUsers: build.query<Users[],void>({
+        async queryFn(currUserId):Promise<any>{
+          try{
+            let followingsArr=await getFollowingArrFirebase(currUserId);
+            let usersArr: { }[]=[];
+            const q=query(collection(db,'users'), where( documentId(), "not-in" , followingsArr))
+            usersArr= await getDataFirebase(q);
+            console.log(usersArr)
+            return {data:usersArr}   
+          }
+    
+          catch(err:any){
+            return{error:err} 
+          }
+    
+      },providesTags: ['Users']}),
+
+      getFollowingFollowersUsersList: build.query<Users[],void>({
         async queryFn(currUserId):Promise<any>{
           try{
             let followingsArr=await getFollowingArrFirebase(currUserId);
@@ -33,7 +51,8 @@ endpoints: (build) => ({
           try{
             let currUserDocRef = doc(db,`users/${currUserId}`);
             await updateDataFirebase(currUserDocRef,'following',id)
-    
+            let followedDocRef = doc(db,`users/${id}`);
+            await updateDataFirebase(followedDocRef,'following',currUserId)
             return {data:'ok'} 
           }
     
@@ -41,8 +60,31 @@ endpoints: (build) => ({
             return {error:err}
           }
     
-        },invalidatesTags:['Posts','Users']
+        },invalidatesTags:['Posts','Users'],
+        async onQueryStarted({id,currUserId}, { dispatch, queryFulfilled }) {
+          // `updateQueryData` requires the endpoint name and cache key arguments,
+          // so it knows which piece of cache state to update
+          const patchResult = dispatch(
+            apiSlice.util.updateQueryData<string>('getUsers', currUserId, (draft:Users[]) => {
+              // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+              const indexOfObject = draft.findIndex(object => {
+                return object.id === id;
+              });
+              
+              console.log(indexOfObject); // 👉️ 1
+              
+              draft.splice(indexOfObject, 1);
+            })
+          )
+
+          try {
+            await queryFulfilled
+          } catch {
+            patchResult.undo()
+          }
+        }
       }),
+      
     }),
     overrideExisting:true
 })

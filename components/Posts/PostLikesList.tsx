@@ -12,7 +12,7 @@ interface PropsType{
 
 const mapPosts=(posts:any,currUserId:string)=>{
   //console.count('here')
-  return posts?.filter((post)=>post?.retweetedBy?.includes(currUserId)|| post?.creatorId===currUserId).map((post:any) => (
+  return posts?.filter((post)=> post?.likedBy?.includes(currUserId)).map((post:any) => (
     <Post key={post.id} currUserId={currUserId} {...post}/>
   ))
 };

@@ -7,7 +7,19 @@ interface Posts{
   timestamp:string,
   tweet:string,
   creatorId:string,
-  likedBy:string[]
+  likedBy:string[],
+  retweetedBy:string[]
+}
+
+const optimisticUpdateForLikeRetweet=(draft,currUserId,postId,property)=>{
+  const post = draft.find(post => post.id === postId)
+  if (post && !post?.[property]?.includes(currUserId)) {
+    post[property]=post?.[property]??[];
+    post?.[property].push(currUserId)
+  }
+  else if(post && post?.[property]?.includes(currUserId))
+      post[property]=post?.[property].filter((tweetId)=>tweetId!==currUserId)
+  console.log(post,draft,property,post[property])
 }
 
 const extendedApi = apiSlice.injectEndpoints({
@@ -28,7 +40,8 @@ const extendedApi = apiSlice.injectEndpoints({
           return{error:err} 
         }
 
-    },providesTags: ['Posts']}),
+    },providesTags: ['Posts'],
+  }),
     
     addPost:build.mutation({
         async queryFn(data):Promise<any>{
@@ -45,22 +58,22 @@ const extendedApi = apiSlice.injectEndpoints({
             return {error:err}
           }
 
-        },invalidatesTags:['Posts'],
+        },
         async onQueryStarted(data, { dispatch, queryFulfilled }) {
           // `updateQueryData` requires the endpoint name and cache key arguments,
           // so it knows which piece of cache state to update
-          console.log(data)
           const patchResult = dispatch(
-            apiSlice.util.updateQueryData<string>('getPosts', undefined, (draft:Posts[]) => {
-              console.log(data,draft)
+            apiSlice.util.updateQueryData<string>('getPosts', data.creatorId, (draft:Posts[]) => {
               // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
               draft.unshift({
                 timestamp: new Date().toISOString(),
                 ...data
             })
+
+            console.log(draft)
             })
           )
-          console.log(data,patchResult)
+
           try {
             await queryFulfilled
           } catch {
@@ -70,7 +83,7 @@ const extendedApi = apiSlice.injectEndpoints({
     }),
     
     deletePost:build.mutation({
-      async queryFn(id)/*:Promise<any>*/{
+      async queryFn(id):Promise<any>{
         try{
           //console.log(id);
           await deleteDoc(doc(db,`tweets/${id}`))
@@ -84,20 +97,6 @@ const extendedApi = apiSlice.injectEndpoints({
       },invalidatesTags:['Posts']
   }),
 
-  getRetweetedPosts: build.query<Posts[],void>({
-    async queryFn(currUserId):Promise<any>{
-      try{
-        let tweetsArr: { }[]=[];
-        const q=query(collection(db,'tweets'), where("retweetedBy", "array-contains" , currUserId))
-        tweetsArr = await getDataFirebase(q)
-        return ({data:tweetsArr})
-      }
-
-      catch(err:any){
-        return{error:err} 
-      }
-
-  },providesTags: ['RetweetPosts']}),
   likeTweet:build.mutation({
     async queryFn({id,currUserId}):Promise<any>{
       try{
@@ -107,24 +106,18 @@ const extendedApi = apiSlice.injectEndpoints({
         return {data:'ok'} 
       }
       catch(err){
+
         return {error:err}
+      
       }
     },
     async onQueryStarted({id,currUserId}, { dispatch, queryFulfilled }) {
-      // `updateQueryData` requires the endpoint name and cache key arguments,
-      // so it knows which piece of cache state to update
       const patchResult = dispatch(
-        apiSlice.util.updateQueryData<string>('getPosts', undefined, (draft:Posts[]) => {
-          console.log(draft)
-          // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
-          const post = draft.find(post => post.id === id)
-            if (post) {
-              post?.likedBy.push(currUserId)
-            }
-          console.log(post)
+        apiSlice.util.updateQueryData<string>('getPosts', currUserId, (draft:Posts[]) => {
+            optimisticUpdateForLikeRetweet(draft,currUserId,id,'likedBy');
+            
         })
       )
-      console.log(patchResult)
       try {
         await queryFulfilled
       } catch {
@@ -144,7 +137,20 @@ const extendedApi = apiSlice.injectEndpoints({
       catch(err){
         return {error:err}
       }
-    },invalidatesTags:['RetweetPosts']
+    },
+    async onQueryStarted({id,currUserId}, { dispatch, queryFulfilled }) {
+      const patchResult = dispatch(
+        apiSlice.util.updateQueryData<string>('getPosts', currUserId, (draft:Posts[]) => {
+          optimisticUpdateForLikeRetweet(draft,currUserId,id,'retweetedBy');
+            
+        })
+      )
+      try {
+        await queryFulfilled
+      } catch {
+        patchResult.undo()
+      }
+    }
   })
   }),
   overrideExisting:true
@@ -153,6 +159,5 @@ const extendedApi = apiSlice.injectEndpoints({
 export const { useGetPostsQuery,
               useAddPostMutation,
               useDeletePostMutation,
-              useGetRetweetedPostsQuery,
               useLikeTweetMutation,
               useRetweetTweetMutation } = extendedApi

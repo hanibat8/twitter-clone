@@ -10,7 +10,6 @@ interface PropsType{
 }
 
 const mapUsers=(users:any,currUserId:string)=>{
-  //console.count('here')
   return users?.filter((user:any) =>user.id!==currUserId).map((user:any) => (
     <Users key={user.id} {...user}/>
   ))
