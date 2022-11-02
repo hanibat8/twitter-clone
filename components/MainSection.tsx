@@ -22,7 +22,9 @@ const MainSection:FC<PropsType>=({children})=>{
             </Modal>
             <div className='flex mx-32 gap-x-5'>
                 <Sidebar/>
-                {children}
+                <main className='mr-5 pt-8 flex-1 basis-[45%] border-x-2 border-stone-100 min-h-screen'>
+                    {children}
+                </main>
                 <div className='basis-[25%]'>
                     <Search/>
                     <UsersList currUserId={session?.userId} errMsg='No users found to follow'/>

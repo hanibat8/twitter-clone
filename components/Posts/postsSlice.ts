@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc , query,  where } from 'firebase/firestore'
+import { addDoc, collection, getDoc, deleteDoc, doc , query,  where } from 'firebase/firestore'
 import { apiSlice, getDataFirebase,getFollowingArrFirebase,updateDataFirebase } from '../apiSlice'
 import { db } from '../../firebase.config';
 
@@ -8,7 +8,11 @@ interface Posts{
   tweet:string,
   creatorId:string,
   likedBy:string[],
-  retweetedBy:string[]
+  retweetedBy:string[],
+  email:string,
+  image:string,
+  name:string,
+  replies?:{id:string,image:string,name:string,reply:string}[]
 }
 
 const optimisticUpdateForLikeRetweet=(draft,currUserId,postId,property)=>{
@@ -19,14 +23,29 @@ const optimisticUpdateForLikeRetweet=(draft,currUserId,postId,property)=>{
   }
   else if(post && post?.[property]?.includes(currUserId))
       post[property]=post?.[property].filter((tweetId)=>tweetId!==currUserId)
-  console.log(post,draft,property,post[property])
+  //console.log(post,draft,property,post[property])
+}
+
+const optimisticUpdateForReply=(draft,currUserId,postId,reply,property)=>{
+  console.log(draft,currUserId,postId,property)
+  /*const post = draft.find(post => post.id === postId)
+  if (post && !post?.[property]?.includes(currUserId)) {
+    post[property]=post?.[property]??[];
+    post?.[property].push(currUserId)
+  }
+  else if(post && post?.[property]?.includes(currUserId))
+      post[property]=post?.[property].filter((tweetId)=>tweetId!==currUserId)*/
+  //console.log(post,draft,property,post[property])
 }
 
 const extendedApi = apiSlice.injectEndpoints({
+  
   endpoints: (build) => ({
      
-    getPosts: build.query<Posts[],void>({
+    getPosts: build.query<Posts[],string>({
       async queryFn(currUserId):Promise<any>{
+        if(!currUserId)
+          return {data:'ok'}
         try{
           let followingsArr=await getFollowingArrFirebase(currUserId);
           let tweetsArr: { }[]=[];
@@ -41,6 +60,30 @@ const extendedApi = apiSlice.injectEndpoints({
         }
 
     },providesTags: ['Posts'],
+  }),
+
+  getPost: build.query<Posts,string>({
+    async queryFn(id):Promise<any>{
+      try{
+        console.log(id)
+        if (!id || JSON.stringify(id) === '{}') return;
+        //console.log(id)
+        if(id)
+        {
+          const tweetDocRef = doc(db,`tweets/${id}`);
+          let tweet=await getDoc(tweetDocRef)
+          //console.log(tweet.data())
+          return { data:{id: tweet.id, ...tweet.data()} }
+        }
+
+        return {data:{}} 
+      }
+
+      catch(err:any){
+        return{error:err} 
+      }
+
+  },providesTags: ['Post'],
   }),
     
     addPost:build.mutation({
@@ -70,7 +113,7 @@ const extendedApi = apiSlice.injectEndpoints({
                 ...data
             })
 
-            console.log(draft)
+            //console.log(draft)
             })
           )
 
@@ -100,8 +143,9 @@ const extendedApi = apiSlice.injectEndpoints({
   likeTweet:build.mutation({
     async queryFn({id,currUserId}):Promise<any>{
       try{
+        console.log(id,currUserId)
         let likedDocRef = doc(db,`tweets/${id}`);
-        updateDataFirebase(likedDocRef,'likedBy',currUserId)
+        await updateDataFirebase(likedDocRef,'likedBy',currUserId)
         
         return {data:'ok'} 
       }
@@ -110,7 +154,7 @@ const extendedApi = apiSlice.injectEndpoints({
         return {error:err}
       
       }
-    },
+    },invalidatesTags:['Post'],
     async onQueryStarted({id,currUserId}, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
         apiSlice.util.updateQueryData<string>('getPosts', currUserId, (draft:Posts[]) => {
@@ -126,18 +170,50 @@ const extendedApi = apiSlice.injectEndpoints({
     }
   }),
 
+  replyToTweet:build.mutation({
+    async queryFn({id,creatorId,reply,name,image}):Promise<any>{
+      try{
+        console.log(id,creatorId)
+        let replyDocRef = doc(db,`tweets/${id}`);
+        let obj={id:creatorId,reply,name,image}
+        console.log(obj)
+        updateDataFirebase(replyDocRef,'replies',obj)
+        
+        return {data:'ok'} 
+      }
+      catch(err){
+
+        return {error:err}
+      
+      }
+    },invalidatesTags:['Post'],
+    async onQueryStarted({id,currUserId,reply}, { dispatch, queryFulfilled }) {
+      const patchResult = dispatch(
+        apiSlice.util.updateQueryData<string>('getPosts', currUserId, (draft:Posts[]) => {
+          optimisticUpdateForReply(draft,currUserId,id,reply,'replies');
+            
+        })
+      )
+      try {
+        await queryFulfilled
+      } catch {
+        patchResult.undo()
+      }
+    }
+  }),
+
   retweetTweet:build.mutation({
     async queryFn({id,currUserId}):Promise<any>{
       try{
         let retweetedDocRef = doc(db,`tweets/${id}`);
-        updateDataFirebase(retweetedDocRef,'retweetedBy',currUserId)
+        await updateDataFirebase(retweetedDocRef,'retweetedBy',currUserId)
         
         return {data:'ok'} 
       }
       catch(err){
         return {error:err}
       }
-    },
+    },invalidatesTags:['Post'],
     async onQueryStarted({id,currUserId}, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
         apiSlice.util.updateQueryData<string>('getPosts', currUserId, (draft:Posts[]) => {
@@ -153,11 +229,14 @@ const extendedApi = apiSlice.injectEndpoints({
     }
   })
   }),
+  
   overrideExisting:true
 })
 
 export const { useGetPostsQuery,
+              useGetPostQuery,
               useAddPostMutation,
               useDeletePostMutation,
               useLikeTweetMutation,
-              useRetweetTweetMutation } = extendedApi
+              useRetweetTweetMutation,
+              useReplyToTweetMutation } = extendedApi

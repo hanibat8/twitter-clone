@@ -2,18 +2,32 @@ import React from 'react'
 //import { useSelector } from 'react-redux'
 import {useGetPostsQuery} from './postsSlice';
 
-import dynamic from "next/dynamic";
+import PostActions from './PostActions';
 import withDataListHOC from '../withDataListHOC';
+
+import dynamic from "next/dynamic";
 const Post = dynamic(() => import("./Post"))
+const LinkCustom = dynamic(() => import("../LinkCustom"))
 
 interface PropsType{
   content?:any
 }
 
 const mapPosts=(posts:any,currUserId:string)=>{
-
+  //console.log(posts)
   return posts?.map((post:any) => (
-    <Post key={post.id} currUserId={currUserId} {...post}/>
+    <LinkCustom key={post.id} href={`post/${post.id}`}>
+      <Post id={post.id}
+      name={post.name}
+      image={post.image}>
+        
+          <p>{post.tweet}</p>
+          <PostActions id={post.id} 
+            creatorId={post.creatorId} currUserId={currUserId}
+            likedBy={post.likedBy} retweetedBy={post.retweetedBy} />
+      
+      </Post>
+    </LinkCustom>
   ))
 };
 

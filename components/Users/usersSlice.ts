@@ -14,17 +14,23 @@ endpoints: (build) => ({
 
     getUsers: build.query<Users[],void>({
         async queryFn(currUserId):Promise<any>{
-          try{
-            let followingsArr=await getFollowingArrFirebase(currUserId);
-            let usersArr: { }[]=[];
-            const q=query(collection(db,'users'), where( documentId(), "not-in" , followingsArr))
-            usersArr= await getDataFirebase(q);
-            console.log(usersArr)
-            return {data:usersArr}   
+          if(currUserId!=null){
+            try{
+              let followingsArr=await getFollowingArrFirebase(currUserId);
+              let usersArr: { }[]=[];
+              const q=query(collection(db,'users'), where( documentId(), "not-in" , followingsArr))
+              usersArr= await getDataFirebase(q);
+              console.log(usersArr)
+              return {data:usersArr}   
+            }
+      
+            catch(err:any){
+              return{error:err} 
+            }
           }
-    
-          catch(err:any){
-            return{error:err} 
+
+          else{
+            return {data:'ok'}
           }
     
       },providesTags: ['Users']}),
@@ -67,11 +73,7 @@ endpoints: (build) => ({
           const patchResult = dispatch(
             apiSlice.util.updateQueryData<string>('getUsers', currUserId, (draft:Users[]) => {
               // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
-              const indexOfObject = draft.findIndex(object => {
-                return object.id === id;
-              });
-              
-              console.log(indexOfObject); // 👉️ 1
+              const indexOfObject = draft.findIndex(object =>object.id === id);
               
               draft.splice(indexOfObject, 1);
             })

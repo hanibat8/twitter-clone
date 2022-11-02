@@ -25,11 +25,11 @@
     "**/*.ts",
     "**/*.tsx",
     "components/Search.js",
-    "components/withDataListHOC.jsx",
+    "components/withDataListHOC.tsx",
     "components/Posts/PostsList.tsx",
     "components/Posts/PostRetweetPostsList.tsx",
     "components/Posts/postsSlice.ts"
-  ],
+, "pages/_document.js"  ],
   "exclude": [
     "node_modules"
   ]

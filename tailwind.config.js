@@ -20,6 +20,7 @@ module.exports = {
       },
       colors: {
         'regal-blue': '#19163D',
+        'primary-blue':'#3b82f6'
       }
     },
   },

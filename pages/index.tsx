@@ -22,9 +22,7 @@ const Home: NextPage = () => {
     
     {session && status==='authenticated' &&
         <MainSection>
-          <main className='mr-5 pt-8 flex-1 basis-[45%] border-x-2 border-stone-100 min-h-screen'>
             <PostsList currUserId={session?.userId} errMsg='No posts found'/>
-          </main>
         </MainSection>
      }
 

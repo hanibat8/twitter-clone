@@ -2,7 +2,6 @@ import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 import { doc ,getDocs, updateDoc, getDoc, DocumentReference } from 'firebase/firestore'
 import { db } from '../firebase.config';
 
-
 export const getFollowingArrFirebase=async (currUserId:any)=>{
   let currUserDocRef = doc(db,`users/${currUserId}`);
   let docData=(await getDoc(currUserDocRef)).data();
@@ -16,12 +15,26 @@ export const getDataFirebase=async (q:any)=>{
   return querySnapshot.docs.map((doc)=> ({id: doc.id, ...doc.data() as object}))
 }
 
-export const updateDataFirebase=async (docRef:DocumentReference,property:string,id:string)=>{
+const addItemToArr=(arr,id,item)=>{
+  if(arr.includes(id)) arr=arr.filter(itemId=>itemId!=id);
+    else arr.push(item);
+    return arr;
+}
+
+export const updateDataFirebase=async (docRef:DocumentReference,property:string,id:string|{id:string,reply:string})=>{
   let docData=(await getDoc(docRef)).data();
   let arr=docData?.[property]??[];
-  //console.log(arr,docData?.[property]);
-  if(arr.includes(id)) arr=arr.filter(itemId=>itemId!=id);
-  else arr.push(id);
+
+  //console.log(id,arr,docData?.[property]);
+  
+  if (typeof id === 'string' || id instanceof String){
+    arr=addItemToArr(arr,id,id)
+  }
+  else{
+    //console.log(id)
+    arr=addItemToArr(arr,id.id,id)
+  }
+    //console.log(docRef,property,arr)
   await updateDoc(docRef,property,arr);
 }
 
@@ -30,7 +43,7 @@ export const apiSlice = createApi({
   reducerPath:'api/apiSlice',
   baseQuery: fakeBaseQuery(),
   // The "endpoints" represent operations and requests for this server
-  tagTypes: ['Posts','Users','RetweetPosts'],
+  tagTypes: ['Posts','Post','Users','RetweetPosts'],
   endpoints: builder => ({
   })
 })
