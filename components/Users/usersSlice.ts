@@ -14,8 +14,9 @@ endpoints: (build) => ({
 
     getUsers: build.query<Users[],void>({
         async queryFn(currUserId):Promise<any>{
-          if(currUserId!=null){
+          if(currUserId){
             try{
+              console.log(currUserId)
               let followingsArr=await getFollowingArrFirebase(currUserId);
               let usersArr: { }[]=[];
               const q=query(collection(db,'users'), where( documentId(), "not-in" , followingsArr))
@@ -25,6 +26,7 @@ endpoints: (build) => ({
             }
       
             catch(err:any){
+              console.log(err)
               return{error:err} 
             }
           }

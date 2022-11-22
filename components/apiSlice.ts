@@ -25,7 +25,7 @@ export const updateDataFirebase=async (docRef:DocumentReference,property:string,
   let docData=(await getDoc(docRef)).data();
   let arr=docData?.[property]??[];
 
-  //console.log(id,arr,docData?.[property]);
+  console.log(id,arr,docData?.[property]);
   
   if (typeof id === 'string' || id instanceof String){
     arr=addItemToArr(arr,id,id)
@@ -34,7 +34,7 @@ export const updateDataFirebase=async (docRef:DocumentReference,property:string,
     //console.log(id)
     arr=addItemToArr(arr,id.id,id)
   }
-    //console.log(docRef,property,arr)
+    console.log(docRef,property,arr)
   await updateDoc(docRef,property,arr);
 }
 

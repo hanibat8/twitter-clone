@@ -26,15 +26,13 @@ const optimisticUpdateForLikeRetweet=(draft,currUserId,postId,property)=>{
   //console.log(post,draft,property,post[property])
 }
 
-const optimisticUpdateForReply=(draft,currUserId,postId,reply,property)=>{
-  console.log(draft,currUserId,postId,property)
-  /*const post = draft.find(post => post.id === postId)
-  if (post && !post?.[property]?.includes(currUserId)) {
-    post[property]=post?.[property]??[];
-    post?.[property].push(currUserId)
+const optimisticUpdateForReply=(draft,obj,property)=>{
+  console.log(draft,obj,property)
+ 
+  if (!draft?.[property]?.includes(obj.reply)) {
+    draft[property]=draft?.[property]??[];
+    draft?.[property].push(obj)
   }
-  else if(post && post?.[property]?.includes(currUserId))
-      post[property]=post?.[property].filter((tweetId)=>tweetId!==currUserId)*/
   //console.log(post,draft,property,post[property])
 }
 
@@ -171,11 +169,11 @@ const extendedApi = apiSlice.injectEndpoints({
   }),
 
   replyToTweet:build.mutation({
-    async queryFn({id,creatorId,reply,name,image}):Promise<any>{
+    async queryFn({postId,id,reply,name,image}):Promise<any>{
       try{
-        console.log(id,creatorId)
-        let replyDocRef = doc(db,`tweets/${id}`);
-        let obj={id:creatorId,reply,name,image}
+        //console.log(id,creatorId)
+        let replyDocRef = doc(db,`tweets/${postId}`);
+        let obj={id,reply,name,image}
         console.log(obj)
         updateDataFirebase(replyDocRef,'replies',obj)
         
@@ -186,11 +184,11 @@ const extendedApi = apiSlice.injectEndpoints({
         return {error:err}
       
       }
-    },invalidatesTags:['Post'],
-    async onQueryStarted({id,currUserId,reply}, { dispatch, queryFulfilled }) {
+    },
+    async onQueryStarted({postId,id,reply,name,image}, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
-        apiSlice.util.updateQueryData<string>('getPosts', currUserId, (draft:Posts[]) => {
-          optimisticUpdateForReply(draft,currUserId,id,reply,'replies');
+        apiSlice.util.updateQueryData<string>('getPost', postId, (draft:Posts) => {
+          optimisticUpdateForReply(draft,{id,reply,name,image},'replies');
             
         })
       )

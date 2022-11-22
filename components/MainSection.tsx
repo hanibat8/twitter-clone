@@ -1,5 +1,6 @@
 import React,{FC} from 'react'
-import { useSession} from 'next-auth/react';
+import { RootState } from '../app/store';
+import {useSelector } from 'react-redux';
 import Sidebar from './Sidebar';
 import Search from './Search';
 import AddPostForm from './Posts/AddPostForm';
@@ -13,7 +14,7 @@ interface PropsType{
 
 const MainSection:FC<PropsType>=({children})=>{
 
-    const {data:session,}=useSession();
+    const currentUser=useSelector((state:RootState)=>state.currentUser);
     
     return (
         <>
@@ -27,7 +28,7 @@ const MainSection:FC<PropsType>=({children})=>{
                 </main>
                 <div className='basis-[25%]'>
                     <Search/>
-                    <UsersList currUserId={session?.userId} errMsg='No users found to follow'/>
+                    <UsersList currUserId={currentUser?.userId} errMsg='No users found to follow'/>
                 </div>
             </div>
         </>

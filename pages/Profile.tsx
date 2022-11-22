@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import dynamic from "next/dynamic";
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import SignUpLoginFullScreen from '../components/SignUpLoginFullScreen';
 import PostRetweetPostsList from '../components/Posts/PostRetweetPostsList';
@@ -40,7 +41,7 @@ export default function Profile() {
         <MainSection>
           <main className='mr-5 pt-8 flex-1 basis-[45%] border-x-2 border-stone-100 min-h-screen'>
               <div className='px-4'>
-                  <img className='rounded-full' src={session?.user?.image!}/>
+                  <Image width={60} height={60} alt='current user image' className='rounded-full' src={session?.user?.image!}/>
                   <h2 className='text-xl font-bold mt-2'>{session.user.name}</h2>
                   <h3 className=' text-slate-500'>{'@__'+session.user.name}</h3>
                   <div className='flex'>

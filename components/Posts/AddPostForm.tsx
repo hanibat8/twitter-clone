@@ -52,7 +52,7 @@ const AddPostForm=()=>{
   return (
    <form className='w-full  text-black' onSubmit={onSubmitHandler}>
     <div className='flex items-start gap-x-2'>
-      {session?.user?.image && <Image className='rounded-full' src={session?.user?.image!} width={50} height={50}/>}
+      {session?.user?.image && <Image alt='user image' className='rounded-full' src={session?.user?.image!} width={50} height={50}/>}
        <textarea
           {...register('tweet')} name='tweet'
           placeholder='Whats happening?'

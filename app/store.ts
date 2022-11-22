@@ -1,11 +1,13 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import modalReducer from '../components/modalSlice'
+import currentUserReducer from '../components/currentUserSlice'
 import { apiSlice } from '../components/apiSlice'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
 
 export const store = configureStore({
   reducer: {
     isModalOpen:modalReducer,
+    currentUser:currentUserReducer,
     [apiSlice.reducerPath]:apiSlice.reducer
   },
   middleware: getDefaultMiddleware =>

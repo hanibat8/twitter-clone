@@ -56,10 +56,10 @@ const SinglePost=()=>{
                         <PostStats likedBy={post.likedBy} 
                                 retweetedBy={post.retweetedBy}/>
                         <PostActions id={post.id} 
-                            creatorId={post.creatorId} currUserId={session?.userId}
+                            creatorId={post.creatorId}
                             likedBy={post.likedBy} retweetedBy={post.retweetedBy} />
                     </Post>
-                    <PostReplyForm image={post.image} name={post.name} id={post.id} creatorId={post.creatorId}/>
+                    <PostReplyForm postId={post.id} image={session?.user.image} name={session?.user?.name} creatorId={post.creatorId}/>
                     <PostRepliesList replies={post?.replies}/>
             </MainSection>
     }

@@ -9,7 +9,7 @@ interface PropsType{
   content:any
 }
 
-const mapUsers=(users:any,currUserId:string)=>{
+const mapUsers=(users:any,currUserId:string,notNeeded)=>{
   return users?.filter((user:any) =>user.id!==currUserId).map((user:any) => (
     <Users key={user.id} {...user}/>
   ))

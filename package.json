@@ -26,6 +26,7 @@
     "react-hook-form": "^7.33.0",
     "react-icons": "^4.4.0",
     "react-redux": "^8.0.2",
+    "uuidv4": "^6.2.13",
     "yup": "^0.32.11"
   },
   "devDependencies": {
