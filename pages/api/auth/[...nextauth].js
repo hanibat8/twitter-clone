@@ -26,5 +26,6 @@ export default NextAuth({
       console.log(session.userId) 
       return session
     }
-  }
+  },
+  secret:process.env.NEXTAUTH_SECRET
 })
