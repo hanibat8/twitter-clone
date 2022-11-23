@@ -4,6 +4,7 @@ import { FirebaseAdapter } from "@next-auth/firebase-adapter"
 import * as firestorefunctions from 'firebase/firestore';
 import { db } from "../../../firebase.config"
 
+
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export default NextAuth({
@@ -22,10 +23,10 @@ export default NextAuth({
     async session({ session, token, user }) {
       console.log(user.id)
       // Send properties to the client, like an access_token from a provider.
-      session.userId = user.id;
-      console.log(session.userId) 
+      session.user.userId = user.id;
+      console.log(session.user.userId) 
       return session
     }
   },
   secret:process.env.NEXTAUTH_SECRET
-})
+}) 

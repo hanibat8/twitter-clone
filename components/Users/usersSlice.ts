@@ -2,6 +2,9 @@ import {  collection, doc , query,
         where, documentId } from 'firebase/firestore'
 import { apiSlice, getDataFirebase,getFollowingArrFirebase,updateDataFirebase } from '../apiSlice'
 import { db } from '../../firebase.config';
+import { QueryDefinition } from '@reduxjs/toolkit/dist/query/endpointDefinitions';
+import { BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
+import { QueryKeys } from '@reduxjs/toolkit/dist/query/core/apiState';
 
 interface Users{
     image:string,
@@ -14,7 +17,7 @@ endpoints: (build) => ({
 
     getUsers: build.query<Users[],void>({
         async queryFn(currUserId):Promise<any>{
-          if(currUserId){
+          if(currUserId!==null || undefined){
             try{
               console.log(currUserId)
               let followingsArr=await getFollowingArrFirebase(currUserId);
@@ -73,7 +76,7 @@ endpoints: (build) => ({
           // `updateQueryData` requires the endpoint name and cache key arguments,
           // so it knows which piece of cache state to update
           const patchResult = dispatch(
-            apiSlice.util.updateQueryData<string>('getUsers', currUserId, (draft:Users[]) => {
+            extendedApi.util.updateQueryData<QueryKeys<{getUsers: QueryDefinition<void, BaseQueryFn<any, unknown, unknown, {}, {}>, "Posts" | "Post" | "Users" | "RetweetPosts", Users[], "api/apiSlice">}>>('getUsers', currUserId, (draft:Users[]) => {
               // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
               const indexOfObject = draft.findIndex(object =>object.id === id);
               

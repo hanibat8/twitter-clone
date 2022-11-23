@@ -59,8 +59,8 @@ export default function Profile() {
                     </li>
                 </ul>
             </div>
-            {tabClicked==='Tweets' ? <PostRetweetPostsList currUserId={session?.userId} errMsg='No retweeted posts'/>
-                                   : <PostLikesList currUserId={session?.userId} errMsg='No liked posts'/>}
+            {tabClicked==='Tweets' ? <PostRetweetPostsList currUserId={session?.user.userId} errMsg='No retweeted posts'/>
+                                   : <PostLikesList currUserId={session?.user.userId} errMsg='No liked posts'/>}
           </main>
         </MainSection>  
       }

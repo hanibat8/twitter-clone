@@ -1,6 +1,9 @@
 import { addDoc, collection, getDoc, deleteDoc, doc , query,  where } from 'firebase/firestore'
 import { apiSlice, getDataFirebase,getFollowingArrFirebase,updateDataFirebase } from '../apiSlice'
 import { db } from '../../firebase.config';
+import { QueryDefinition } from '@reduxjs/toolkit/dist/query/endpointDefinitions';
+import { BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
+import { QueryKeys } from '@reduxjs/toolkit/dist/query/core/apiState';
 
 interface Posts{
   id:string,
@@ -104,7 +107,7 @@ const extendedApi = apiSlice.injectEndpoints({
           // `updateQueryData` requires the endpoint name and cache key arguments,
           // so it knows which piece of cache state to update
           const patchResult = dispatch(
-            apiSlice.util.updateQueryData<string>('getPosts', data.creatorId, (draft:Posts[]) => {
+            extendedApi.util.updateQueryData<QueryKeys<{ getPosts:QueryDefinition<string, BaseQueryFn<any, unknown, unknown, {}, {}>, "Posts" | "Post" | "Users" | "RetweetPosts", Posts[], "api/apiSlice">}>>('getPosts', data.creatorId, (draft:Posts[]) => {
               // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
               draft.unshift({
                 timestamp: new Date().toISOString(),
@@ -155,7 +158,7 @@ const extendedApi = apiSlice.injectEndpoints({
     },invalidatesTags:['Post'],
     async onQueryStarted({id,currUserId}, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
-        apiSlice.util.updateQueryData<string>('getPosts', currUserId, (draft:Posts[]) => {
+        extendedApi.util.updateQueryData<QueryKeys<{ getPosts:QueryDefinition<string, BaseQueryFn<any, unknown, unknown, {}, {}>, "Posts" | "Post" | "Users" | "RetweetPosts", Posts[], "api/apiSlice">}>>('getPosts', currUserId, (draft:Posts[]) => {
             optimisticUpdateForLikeRetweet(draft,currUserId,id,'likedBy');
             
         })
@@ -187,7 +190,7 @@ const extendedApi = apiSlice.injectEndpoints({
     },
     async onQueryStarted({postId,id,reply,name,image}, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
-        apiSlice.util.updateQueryData<string>('getPost', postId, (draft:Posts) => {
+        extendedApi.util.updateQueryData<QueryKeys<{ getPost: QueryDefinition<string, BaseQueryFn<any, unknown, unknown, {}, {}>, "Posts" | "Post" | "Users" | "RetweetPosts", Posts, "api/apiSlice">}>>('getPost', postId, (draft:Posts) => {
           optimisticUpdateForReply(draft,{id,reply,name,image},'replies');
             
         })
@@ -214,7 +217,7 @@ const extendedApi = apiSlice.injectEndpoints({
     },invalidatesTags:['Post'],
     async onQueryStarted({id,currUserId}, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
-        apiSlice.util.updateQueryData<string>('getPosts', currUserId, (draft:Posts[]) => {
+        extendedApi.util.updateQueryData<QueryKeys<{ getPosts:QueryDefinition<string, BaseQueryFn<any, unknown, unknown, {}, {}>, "Posts" | "Post" | "Users" | "RetweetPosts", Posts[], "api/apiSlice">}>>('getPosts', currUserId, (draft:Posts[]) => {
           optimisticUpdateForLikeRetweet(draft,currUserId,id,'retweetedBy');
             
         })

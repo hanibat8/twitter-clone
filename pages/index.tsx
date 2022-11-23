@@ -9,6 +9,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import MainSection from '../components/MainSection';
 import PostsList from '../components/Posts/PostsList';
 
+
 const Home: NextPage = () => {
   
   const {data:session,status}=useSession();
@@ -26,10 +27,10 @@ const Home: NextPage = () => {
         addCurrentUser({name:session.user.name,
                         email:session.user.email,
                         image:session.user.image,
-                        userId:session.userId}))
+                        userId:session?.user.userId}))
     }
      
-  },[session?.user,dispatch,session?.userId])
+  },[session?.user,dispatch,session?.user.userId])
 
   return (
   <>
