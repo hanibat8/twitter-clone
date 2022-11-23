@@ -2,8 +2,8 @@ import React from 'react'
 import Image from 'next/image';
 import { toggleModal } from '../modalSlice';
 import { useAddPostMutation } from '../Posts/postsSlice';
-import { useDispatch } from 'react-redux'
-import { useSession } from 'next-auth/react';
+import { useDispatch,useSelector } from 'react-redux'
+import { RootState } from '../../app/store';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -21,7 +21,7 @@ type FormData = {
 
 const AddPostForm=()=>{
 
-  const {data:session,status}=useSession();
+  const currentUser=useSelector((state:RootState)=>state.currentUser);
   const dispatch = useDispatch();
 
   const [addPost]=useAddPostMutation();
@@ -42,17 +42,17 @@ const AddPostForm=()=>{
       })
     )*/
     dispatch(toggleModal(false))
-    addPost({'creatorId':session?.userId,
-            'name':session?.user?.name,
-            'email':session?.user?.email,
-            'image':session?.user?.image,
+    addPost({'creatorId':currentUser.userId,
+            'name':currentUser?.name,
+            'email':currentUser?.email,
+            'image':currentUser?.image,
             ...data});
   }))
 
   return (
    <form className='w-full  text-black' onSubmit={onSubmitHandler}>
     <div className='flex items-start gap-x-2'>
-      {session?.user?.image && <Image alt='user image' className='rounded-full' src={session?.user?.image!} width={50} height={50}/>}
+      {currentUser.image && <Image alt='user image' className='rounded-full' src={currentUser.image!} width={50} height={50}/>}
        <textarea
           {...register('tweet')} name='tweet'
           placeholder='Whats happening?'
