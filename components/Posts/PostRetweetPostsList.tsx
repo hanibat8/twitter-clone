@@ -22,7 +22,7 @@ const mapPosts=(posts:any,currUserId:string)=>{
           
             <p>{post.tweet}</p>
             <PostActions id={post.id} 
-              creatorId={post.creatorId} currUserId={currUserId}
+              creatorId={post.creatorId}
               likedBy={post.likedBy} retweetedBy={post.retweetedBy} />
         
         </Post>
