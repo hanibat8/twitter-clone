@@ -22,7 +22,7 @@ export default function SignUpLoginScreen() {
             <h1 className='text-7xl font-bold'>Happening now</h1>      
             <div>
                 <h2 className='text-4xl mb-11'>Join Twitter today.</h2>
-                <button className='bg-white rounded-3xl text-black py-1 px-16 hover:bg-slate-200' onClick={(e)=>{e.preventDefault(); signIn('google')}}><FcGoogle size={30} className='inline-block mr-2'/>Sign up with Google</button>
+                <button className='bg-white rounded-3xl text-black py-1 px-16 hover:bg-slate-200' onClick={(e)=>{e.preventDefault(); signIn()}}><FcGoogle size={30} className='inline-block mr-2'/>Sign up with Google</button>
                 <p className='text-gray-300	text-2xl my-3 ml-36'>or</p>
                 <button className='bg-blue-500 rounded-3xl text-white py-2 px-[90px] hover:bg-blue-400' onClick={onClickHandler}>Sign up with email</button>
             </div>
