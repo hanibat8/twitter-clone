@@ -1,5 +1,5 @@
 import {  collection, doc , query, 
-    where, documentId, addDoc } from 'firebase/firestore'
+    where, documentId, addDoc, getCountFromServer } from '@firebase/firestore';
 import { apiSlice, getDataFirebase,getFollowingArrFirebase,updateDataFirebase } from '../apiSlice'
 import { db } from '../../firebase.config';
 
@@ -37,8 +37,11 @@ endpoints: (build) => ({
         async queryFn(data):Promise<any>{
             try{
                 console.log(data)
-                const q=query(collection(db,'notifications'), where( "postCreatorId", "==" ,data.postCreatorId ),where("message","==",data.message))
-               if(!q){      
+                const q=query(collection(db,'notifications'), where( "postCreatorId", "==" ,data.postCreatorId ), where("postId","==",data.postId), where("message","==",data.message))
+                const snapshot = await getCountFromServer(q);
+                console.log('count: ', snapshot.data().count);
+                 if(snapshot.data().count===0){  
+                console.log('here');    
                 await addDoc(collection(db,'notifications'),{
                     timestamp: new Date().toISOString(),
                 ...data

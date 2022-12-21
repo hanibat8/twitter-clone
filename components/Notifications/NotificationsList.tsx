@@ -3,11 +3,16 @@ import withDataListHOC from '../withDataListHOC'
 import Notification from './Notification'
 import { useGetNotificationsQuery } from './notificationsSlice'
 
+import dynamic from "next/dynamic";
+const LinkCustom = dynamic(() => import("../LinkCustom"))
+
 const mapNotifications=(notifications,currUserId:string)=>{
     return notifications?.map((notification:any) => (
-        <Notification key={notification.id} id={notification.id}>
+        <LinkCustom key={notification.id} href={`post/${notification.postId}`}>
+            <Notification id={notification.id}>
               <p>{notification.message}</p>
-        </Notification>
+            </Notification>
+        </LinkCustom>
         
       ))
 }

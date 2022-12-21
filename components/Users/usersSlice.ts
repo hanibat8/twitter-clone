@@ -21,12 +21,13 @@ endpoints: (build) => ({
             try{
               console.log(currUserId)
               let followingsArr=await getFollowingArrFirebase(currUserId);
+              console.log(followingsArr)
               let usersArr: { }[]=[];
               const q=query(collection(db,'users'), where( documentId(), "not-in" , followingsArr))
               usersArr= await getDataFirebase(q);
               console.log(usersArr)
               return {data:usersArr}   
-            }
+            } 
       
             catch(err:any){
               console.log(err)

@@ -11,7 +11,7 @@ interface PropsType{
     creatorId:string,
 }
 
-const isLikedByUser=(likedBy:string[],creatorId:string)=>likedBy?.includes(creatorId);
+const isLikedByUser=(likedBy:string[],creatorId:string)=> likedBy?.includes(creatorId);
 
 const LikePostsAction:React.FC<PropsType> = ({likedBy,id, creatorId}) => {
 
@@ -20,13 +20,14 @@ const LikePostsAction:React.FC<PropsType> = ({likedBy,id, creatorId}) => {
     const currentUser=useSelector((state:RootState)=>state.currentUser);
 
     const onClickLikeBtnHandler=(id:string,e)=>{
-        console.log('here',e);
+        //console.log('here',e);
         e.preventDefault();
         e.stopPropagation();
         //e.nativeEvent.stopImmediatePropagation();
         likeTweet({id, currUserId:currentUser.userId })
 
-        !isLikedByUser(likedBy,currentUser.userId) && addNotification({'postCreatorId':creatorId,
+        console.log(creatorId!=currentUser.userId)
+        !isLikedByUser(likedBy,currentUser.userId) && creatorId!=currentUser.userId && addNotification({'postId':id,'postCreatorId':creatorId,
             'message':`${currentUser.name} liked your tweet`});
     }
 

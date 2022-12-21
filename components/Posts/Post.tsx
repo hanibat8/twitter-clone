@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const Post = ({id,name,image,children}) => {
 
-   // console.log(children,image)
+    console.log('id'+id)
 
     let imgSrc=image ?? '/Portrait_Placeholder.png'; 
     

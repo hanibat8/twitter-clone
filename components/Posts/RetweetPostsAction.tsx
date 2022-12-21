@@ -25,8 +25,9 @@ const RetweetPostsAction:React.FC<PropsType> = ({retweetedBy,id,creatorId}) => {
         e.stopPropagation();
         retweetTweet({id,currUserId:currentUser.userId})
 
-        !isRetweetedByUser(retweetedBy,currentUser.userId) && addNotification({'postCreatorId':creatorId,
-            'message':`${currentUser.name} retweeted your tweet`});
+        console.log(isRetweetedByUser(retweetedBy,currentUser.userId))
+        !isRetweetedByUser(retweetedBy,currentUser.userId) && creatorId!=currentUser.userId  &&  addNotification({'postId':id,'postCreatorId':creatorId,
+            'message':`${currentUser.name} retweeted your tweet`,});
       }
 
     return (

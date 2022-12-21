@@ -24,9 +24,10 @@ export default NextAuth({
       console.log(user.id)
       // Send properties to the client, like an access_token from a provider.
       session.user.userId = user.id;
-      console.log(session.user.userId) 
+      //console.log(session.user.userId) 
       return session
     }
   },
-  secret:process.env.NEXTAUTH_SECRET
+  secret:process.env.NEXTAUTH_SECRET,
+  debug: true
 }) 
